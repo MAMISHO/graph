@@ -1,4 +1,4 @@
-'use strict'
+"use strict";
 /*
 // DEfinir un esquema en la evrsión 14
 const { graphql, buildSchema } = require('graphql')
@@ -16,45 +16,64 @@ graphql(schema, '{ hello }').then((data) => {
 })
 */
 
+// consultas en localhost:3000/api
+/*query {
+    bye
+  }
+  query {
+    hello
+  }
+*/
 // definir un esquema en la versión 16
 // "graphql": "^16.0.0"
-const { graphql, GraphQLSchema, GraphQLObjectType, GraphQLString } = require('graphql');
-const express = require('express');
-const gqlMiddleware = require('express-graphql');
+const {
+  graphql,
+  GraphQLSchema,
+  GraphQLObjectType,
+  GraphQLString,
+} = require("graphql");
+const express = require("express");
+const gqlMiddleware = require("express-graphql");
+const { GreetingFields } = require("./greetings.fields");
 const app = express();
 const port = process.env.port || 3000;
 
+/*
 function fieldDefinition() {
-    const fieldls = {
-        hello: {
-            type: GraphQLString,
-            resolve: () => 'Hello world!'
-        },
-        bye: {
-            type: GraphQLString,
-            resolve: () => 'Bye wold'
-        }
-    };
-    return fieldls;
+  const fieldls = {
+    hello: {
+      type: GraphQLString,
+      resolve: () => "Hello world!",
+    },
+    bye: {
+      type: GraphQLString,
+      resolve: () => "Bye wold",
+    },
+  };
+  return fieldls;
 }
+*/
 
 const schema = new GraphQLSchema({
-    query: new GraphQLObjectType({
-        name: 'Greetings',
-        fields: fieldDefinition()
-    })
+  query: new GraphQLObjectType({
+    name: "Greetings",
+    fields: GreetingFields.fields,
+  }),
 });
 
 /*graphql(schema, '{ hello, bye }').then((response) => {
     console.log(response);
 });*/
 
-app.use('/api', gqlMiddleware({
+app.use(
+  "/api",
+  gqlMiddleware({
     schema: schema,
     rootValue: {},
-    graphiql: true
-}));
+    graphiql: true,
+  })
+);
 
 app.listen(port, () => {
-    console.log('listening on port http://localhost:${port}')
-})
+  console.log("listening on port http://localhost:${port}");
+});
